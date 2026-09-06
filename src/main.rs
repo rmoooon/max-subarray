@@ -88,8 +88,28 @@ fn benchmark_solver<T: MaximumSubArraySolver>(solver: &T, arr: &[i32]) -> Solver
 }
 
 fn main() {
-    let data = gen_data(8000, 7);
-    println!("{:?}", benchmark_solver(&CubicSolver, &data));
-    println!("{:?}", benchmark_solver(&QuadraticSolver, &data));
-    println!("{:?}", benchmark_solver(&KadaneSolver, &data));
+    const ARR_SIZES: [usize; 4] = [1000, 2000, 4000, 8000];
+    const ARR_NUM: u64 = 100;
+
+    for size in ARR_SIZES {
+        let mut cubic_total = Duration::ZERO;
+        let mut quadratic_total = Duration::ZERO;
+        let mut kadane_total = Duration::ZERO;
+
+        for seed in 1..=ARR_NUM {
+            let data = gen_data(size, seed);
+            cubic_total += benchmark_solver(&CubicSolver, &data).duration;
+            quadratic_total += benchmark_solver(&QuadraticSolver, &data).duration;
+            kadane_total += benchmark_solver(&KadaneSolver, &data).duration;
+        }
+
+        let cubic_avg = cubic_total / ARR_NUM as u32;
+        let quadratic_avg = quadratic_total / ARR_NUM as u32;
+        let kadane_avg = kadane_total / ARR_NUM as u32;
+
+        println!("Size: {size}");
+        println!("\tCubic: {cubic_avg:?}");
+        println!("\tQuadratic: {quadratic_avg:?}");
+        println!("\tKadane: {kadane_avg:?}");
+    }
 }
