@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-#![allow(unused_variables)]
 use std::{
     hint::black_box,
     time::{Duration, Instant},
@@ -59,7 +57,14 @@ struct KadaneSolver;
 
 impl MaximumSubArraySolver for KadaneSolver {
     fn max_sum(&self, arr: &[i32]) -> i32 {
-        todo!()
+        let mut local = arr[1];
+        let mut global = arr[1];
+        for &i in arr {
+            local = i.max(local + i);
+            global = global.max(local);
+        }
+
+        global
     }
 }
 
@@ -68,6 +73,7 @@ fn gen_data(size: usize, seed: u64) -> Vec<i32> {
     (0..size).map(|_| rng.random_range(-100..100)).collect()
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 struct SolverBenchmark {
     duration: Duration,
@@ -85,4 +91,5 @@ fn main() {
     let data = gen_data(8000, 7);
     println!("{:?}", benchmark_solver(&CubicSolver, &data));
     println!("{:?}", benchmark_solver(&QuadraticSolver, &data));
+    println!("{:?}", benchmark_solver(&KadaneSolver, &data));
 }
