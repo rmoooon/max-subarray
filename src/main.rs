@@ -39,7 +39,19 @@ struct QuadraticSolver;
 
 impl MaximumSubArraySolver for QuadraticSolver {
     fn max_sum(&self, arr: &[i32]) -> i32 {
-        todo!()
+        let mut best = i32::MIN;
+        let size = arr.len();
+        for i in 1..size {
+            let mut sum = 0;
+            for j in &arr[i..size] {
+                sum += j;
+                if sum > best {
+                    best = sum;
+                }
+            }
+        }
+
+        best
     }
 }
 
@@ -72,4 +84,5 @@ fn benchmark_solver<T: MaximumSubArraySolver>(solver: &T, arr: &[i32]) -> Solver
 fn main() {
     let data = gen_data(8000, 7);
     println!("{:?}", benchmark_solver(&CubicSolver, &data));
+    println!("{:?}", benchmark_solver(&QuadraticSolver, &data));
 }
