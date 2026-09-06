@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
+use std::{hint::black_box, time::{Duration, Instant}};
+
 use rand::{RngExt, SeedableRng, rngs::StdRng};
 
 trait MaximumSubArraySolver {
@@ -51,7 +53,18 @@ fn gen_data(size: usize) -> Vec<i32> {
     (0..size).map(|_| rng.random_range(-100..100)).collect()
 }
 
+fn benchmark_solver<T: MaximumSubArraySolver>(solver: &T, arr: &[i32]) -> Duration {
+    let start = Instant::now();
+    let result = black_box(solver.max_sum(arr));
+    let duration = start.elapsed();
+
+    println!("{result}");
+    duration
+}
+
 fn main() {
     let data = gen_data(20);
-    data.iter().for_each(|x| print!("{x} | "));
+    data.iter().for_each(|x| print!("{x} "));
+    println!();
+    println!("{:?}", benchmark_solver(&CubicSolver, &data));
 }
